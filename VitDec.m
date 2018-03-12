@@ -78,7 +78,7 @@ classdef VitDec < handle
         
         function output = decode_data(obj, in)
             fill_trellis(obj, in);
-            
+            traceback(obj);
         end
     end
 end
