@@ -15,17 +15,17 @@ classdef VitDec < handle
 	methods
         function fill_trellis(obj, in)
            %stage 1
-           obj.paths1(1) = hamming_distance(obj.x(1:2,1),in(1:2,1));
-           obj.paths1(2) = hamming_distance(obj.x(1:2,2),in(1:2,1));
+           obj.paths1(1) = obj.hamming_distance(obj.x(1:2,1),in(1:2,1));
+           obj.paths1(2) = obj.hamming_distance(obj.x(1:2,2),in(1:2,1));
            
            obj.path_metrics(1,2) =  obj.paths1(1);
            obj.path_metrics(2,2) = obj.paths1(2);
            
            %stage 2
-           obj.paths2(1) = hamming_distance(obj.x(1:2,1),in(1:2,2));
-           obj.paths2(2) = hamming_distance(obj.x(1:2,2),in(1:2,2));
-           obj.paths2(3) = hamming_distance(obj.x(1:2,3),in(1:2,2));
-           obj.paths2(4) = hamming_distance(obj.x(1:2,4),in(1:2,2));
+           obj.paths2(1) = obj.hamming_distance(obj.x(1:2,1),in(1:2,2));
+           obj.paths2(2) = obj.hamming_distance(obj.x(1:2,2),in(1:2,2));
+           obj.paths2(3) = obj.hamming_distance(obj.x(1:2,3),in(1:2,2));
+           obj.paths2(4) = obj.hamming_distance(obj.x(1:2,4),in(1:2,2));
            
            obj.path_metrics(1,3) = obj.paths2(1) + obj.path_metrics(1,2);
            obj.path_metrics(2,3) = obj.paths2(2) + obj.path_metrics(1,2);
@@ -33,14 +33,14 @@ classdef VitDec < handle
            obj.path_metrics(4,3) = obj.paths2(4) + obj.path_metrics(2,2);
            
            %Stage 3
-           obj.paths3(1) = hamming_distance(obj.x(1:2,1),in(1:2,3));
-           obj.paths3(2) = hamming_distance(obj.x(1:2,2),in(1:2,3));
-           obj.paths3(3) = hamming_distance(obj.x(1:2,3),in(1:2,3));
-           obj.paths3(4) = hamming_distance(obj.x(1:2,4),in(1:2,3));
-           obj.paths3(5) = hamming_distance(obj.x(1:2,5),in(1:2,3));
-           obj.paths3(6) = hamming_distance(obj.x(1:2,6),in(1:2,3));
-           obj.paths3(7) = hamming_distance(obj.x(1:2,7),in(1:2,3));
-           obj.paths3(8) = hamming_distance(obj.x(1:2,8),in(1:2,3));
+           obj.paths3(1) = obj.hamming_distance(obj.x(1:2,1),in(1:2,3));
+           obj.paths3(2) = obj.hamming_distance(obj.x(1:2,2),in(1:2,3));
+           obj.paths3(3) = obj.hamming_distance(obj.x(1:2,3),in(1:2,3));
+           obj.paths3(4) = obj.hamming_distance(obj.x(1:2,4),in(1:2,3));
+           obj.paths3(5) = obj.hamming_distance(obj.x(1:2,5),in(1:2,3));
+           obj.paths3(6) = obj.hamming_distance(obj.x(1:2,6),in(1:2,3));
+           obj.paths3(7) = obj.hamming_distance(obj.x(1:2,7),in(1:2,3));
+           obj.paths3(8) = obj.hamming_distance(obj.x(1:2,8),in(1:2,3));
         
            obj.path_metrics(1,4) = min([obj.paths3(1) + obj.path_metrics(1,3);
                                     obj.paths3(5) + obj.path_metrics(3,3)]);
@@ -52,10 +52,10 @@ classdef VitDec < handle
                                     obj.paths3(8) + obj.path_metrics(4,3)]);
                                 
            %Stage 4
-           obj.paths4(1) = hamming_distance(obj.x(1:2,1),in(1:2,4));
-           obj.paths4(2) = hamming_distance(obj.x(1:2,3),in(1:2,4));
-           obj.paths4(3) = hamming_distance(obj.x(1:2,5),in(1:2,4));
-           obj.paths4(4) = hamming_distance(obj.x(1:2,7),in(1:2,4));
+           obj.paths4(1) = obj.hamming_distance(obj.x(1:2,1),in(1:2,4));
+           obj.paths4(2) = obj.hamming_distance(obj.x(1:2,3),in(1:2,4));
+           obj.paths4(3) = obj.hamming_distance(obj.x(1:2,5),in(1:2,4));
+           obj.paths4(4) = obj.hamming_distance(obj.x(1:2,7),in(1:2,4));
            
            
            obj.path_metrics(1,5) = min([obj.paths4(1) + obj.path_metrics(1,4);
@@ -65,8 +65,8 @@ classdef VitDec < handle
            
            
            %Stage 5
-           obj.paths5(1) = hamming_distance(obj.x(1:2,1),in(1:2,5));
-           obj.paths5(2) = hamming_distance(obj.x(1:2,5),in(1:2,5));
+           obj.paths5(1) = obj.hamming_distance(obj.x(1:2,1),in(1:2,5));
+           obj.paths5(2) = obj.hamming_distance(obj.x(1:2,5),in(1:2,5));
            
            obj.path_metrics(1,6) = min([obj.paths5(1) + obj.path_metrics(1,5);
                                         obj.paths5(2) + obj.path_metrics(3,5)]);
@@ -160,6 +160,17 @@ classdef VitDec < handle
         function output = decode_data(obj, in)
             fill_trellis(obj, in);
             output = traceback(obj);
+        end
+    end
+    methods (Static)
+        function dis = hamming_distance(x,y)          
+            dis = 0;
+                if x(1) ~= y(1)
+                    dis = dis + 1;
+                end
+                if x(2) ~= y(2)
+                    dis = dis + 1;
+                end
         end
     end
 end
