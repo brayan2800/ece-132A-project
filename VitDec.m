@@ -1,11 +1,11 @@
 classdef VitDec < handle
     properties
         columns = 0;
-        path_metrics = zeros(4, 6);
+        path_metrics = zeros(4, 6); %5 inputs results in 4x6 matrix of metrics
         
         paths1 = zeros(1,2);
         paths2 = zeros(1,4);
-        paths_full = zeros(1,8);
+        paths_full = zeros(1,8); %Middle path with full set of branches ... set by decode_data()
         paths4 = zeros(1,4);
         paths5 = zeros(1,2); 
         
@@ -16,7 +16,7 @@ classdef VitDec < handle
     end
 	methods
         function fill_trellis(obj, in)
-		   n_full_stages = obj.columns-4;
+		   n_full_stages = obj.columns-4; %stages w/ 8 branches
            
            %stage 1
            obj.paths1(1) = obj.hamming_distance(obj.x(1:2,1),in(1:2,1));
@@ -31,12 +31,14 @@ classdef VitDec < handle
            obj.paths2(3) = obj.hamming_distance(obj.x(1:2,3),in(1:2,2));
            obj.paths2(4) = obj.hamming_distance(obj.x(1:2,4),in(1:2,2));
            
+           %add branch metric plus path metric from which it came
            obj.path_metrics(1,3) = obj.paths2(1) + obj.path_metrics(1,2);
            obj.path_metrics(2,3) = obj.paths2(2) + obj.path_metrics(1,2);
            obj.path_metrics(3,3) = obj.paths2(3) + obj.path_metrics(2,2);
            obj.path_metrics(4,3) = obj.paths2(4) + obj.path_metrics(2,2);
            
            %Stages 3- columns-2
+           %loop through all stages w/ full set of branches
            for i = 1:n_full_stages
                obj.paths_full(i,1) = obj.hamming_distance(obj.x(1:2,1),in(1:2,i+2));
                obj.paths_full(i,2) = obj.hamming_distance(obj.x(1:2,2),in(1:2,i+2));
@@ -57,7 +59,7 @@ classdef VitDec < handle
                                         obj.paths_full(i,8) + obj.path_metrics(4,i+2)]);
            end 
            
-           %Second to last stage
+           %Second to last stage...simplified b/c we know it is a 0 bit
            obj.paths4(1) = obj.hamming_distance(obj.x(1:2,1),in(1:2,obj.columns-1));
            obj.paths4(2) = obj.hamming_distance(obj.x(1:2,3),in(1:2,obj.columns-1));
            obj.paths4(3) = obj.hamming_distance(obj.x(1:2,5),in(1:2,obj.columns-1));
@@ -70,7 +72,7 @@ classdef VitDec < handle
                                         obj.paths4(4) + obj.path_metrics(4,obj.columns-1)]);
            
            
-           %Last Stage
+           %Last Stage...simplified bc we know it is a 0 bit
            obj.paths5(1) = obj.hamming_distance(obj.x(1:2,1),in(1:2,obj.columns));
            obj.paths5(2) = obj.hamming_distance(obj.x(1:2,5),in(1:2,obj.columns));
            
@@ -82,7 +84,7 @@ classdef VitDec < handle
         function output = traceback(obj)
             n_full_stages = obj.columns-4;
             %output = zeros(1,obj.columns);
-            output(1,1:obj.columns) =  99;
+            output(1,1:obj.columns) =  99;  %set to 99 for debugging purposes
             currstate = [1,obj.columns+1];
             
             %Last Stage 
@@ -188,5 +190,6 @@ classdef VitDec < handle
                     dis = dis + 1;
                 end
         end
+        
     end
 end
