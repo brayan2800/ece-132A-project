@@ -105,10 +105,11 @@ for k = 1:8
 end
 
 
-fprintf("----(Summary) The minimun Hamming Distance is %d\n              So the max number of bits the decoder can correct is %d\n", d_H_min, max_corrected);
-fprintf("              Decoder decoded %d out of 80 inputs correctly\n", correct1);
-fprintf("              Decoder decoded %d out of 360 inputs correctly\n", correct2);
-fprintf("              Decoder decoded %d out of 960 inputs correctly\n", correct3);
+fprintf("---- Results\n")
+fprintf("          (a) Decoder decoded %d out of 80 inputs correctly\n", correct1);
+fprintf("          (b) Decoder decoded %d out of 360 inputs correctly\n", correct2);
+fprintf("          (c) Decoder decoded %d out of 960 inputs correctly\n", correct3);
+fprintf("          (d) The minimun Hamming Distance is %d\n              So the max number of bits the decoder can correct is %d\n", d_H_min, max_corrected);
 
 
 
