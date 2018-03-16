@@ -47,42 +47,42 @@ for k = 1:8
 end
 fprintf("----(Summary) Decoder decoded %d out of 80 inputs correctly\n", correct);
 
-% for k = 1:8
-%     for j = 1:45
-%         corrupt_2_bits((k-1)*45+j,1) = uint16(channel.flip_bits(encoded(i,1:10),B_flip_masks(1,j)));
-%     end
-% end
-% 
-% correct = 0;
-% for k = 1:8
-%     for j = 1:45
-%         corrupt = ftns.dec2binvec(corrupt_2_bits((k-1)*45+j,1),10);
-%         dec = decoder.decode_data(ftns.make_col(corrupt));
-%         if dec == inputs(k,1:5)
-%             correct = correct + 1;
-%         end
-%     end
-% end
-% fprintf("----(Summary) Decoder decoded %d out of 360 inputs correctly\n", correct);
-% 
-% 
-% for k = 1:8
-%     for j = 1:120
-%         corrupt_3_bits((k-1)*120+j,1) = uint16(channel.flip_bits(encoded(i,1:10),C_flip_masks(1,j)));
-%     end
-% end
-% 
-% correct = 0;
-% for k = 1:8
-%     for j = 1:120
-%         corrupt = ftns.dec2binvec(corrupt_3_bits((k-1)*120+j,1),10);
-%         dec = decoder.decode_data(ftns.make_col(corrupt));
-%         if dec == inputs(k,1:5)
-%             correct = correct + 1;
-%         end
-%     end
-% end
-% fprintf("----(Summary) Decoder decoded %d out of 960 inputs correctly\n", correct);
+for k = 1:8
+    for j = 1:45
+        corrupt_2_bits((k-1)*45+j,1) = uint16(channel.flip_bits(encoded(i,1:10),B_flip_masks(1,j)));
+    end
+end
+
+correct = 0;
+for k = 1:8
+    for j = 1:45
+        corrupt = ftns.dec2binvec(corrupt_2_bits((k-1)*45+j,1),10);
+        dec = decoder.decode_data(ftns.make_col(corrupt));
+        if dec == inputs(k,1:5)
+            correct = correct + 1;
+        end
+    end
+end
+fprintf("----(Summary) Decoder decoded %d out of 360 inputs correctly\n", correct);
+
+
+for k = 1:8
+    for j = 1:120
+        corrupt_3_bits((k-1)*120+j,1) = uint16(channel.flip_bits(encoded(i,1:10),C_flip_masks(1,j)));
+    end
+end
+
+correct = 0;
+for k = 1:8
+    for j = 1:120
+        corrupt = ftns.dec2binvec(corrupt_3_bits((k-1)*120+j,1),10);
+        dec = decoder.decode_data(ftns.make_col(corrupt));
+        if dec == inputs(k,1:5)
+            correct = correct + 1;
+        end
+    end
+end
+fprintf("----(Summary) Decoder decoded %d out of 960 inputs correctly\n", correct);
 
 
 
