@@ -126,7 +126,7 @@ classdef VitDec < handle
                         output(obj.columns-1-i) = 0;
                     end
                 elseif currstate == [2,obj.columns-i]
-                    if obj.path_metrics(2,obj.columns-1) == obj.path_metrics(1,obj.columns-1-i) + obj.paths_full(obj.columns-3-i,2)
+                    if obj.path_metrics(2,obj.columns-i) == obj.path_metrics(1,obj.columns-1-i) + obj.paths_full(obj.columns-3-i,2)
                        currstate = [1,obj.columns-1-i];
                        output(obj.columns-1-i) = 1;
                     else
@@ -134,7 +134,7 @@ classdef VitDec < handle
                         output(obj.columns-1-i) = 1;
                     end
                  elseif currstate == [3,obj.columns-i]
-                    if obj.path_metrics(3,obj.columns-1) == obj.path_metrics(2,obj.columns-1-i) + obj.paths_full(obj.columns-3-i,3)
+                    if obj.path_metrics(3,obj.columns-i) == obj.path_metrics(2,obj.columns-1-i) + obj.paths_full(obj.columns-3-i,3)
                        currstate = [2,obj.columns-1-i];
                        output(obj.columns-1-i) = 0;
                     else
@@ -142,7 +142,7 @@ classdef VitDec < handle
                         output(obj.columns-1-i) = 0;
                     end 
                 elseif currstate == [4,obj.columns-i]
-                    if obj.path_metrics(4,obj.columns-1) == obj.path_metrics(2,obj.columns-1-i) + obj.paths_full(obj.columns-3-i,4)
+                    if obj.path_metrics(4,obj.columns-i) == obj.path_metrics(2,obj.columns-1-i) + obj.paths_full(obj.columns-3-i,4)
                        currstate = [2,obj.columns-1-i];
                        output(obj.columns-1-i) = 1;
                     else
