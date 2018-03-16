@@ -13,20 +13,20 @@ classdef SoftVitDec < handle
     end
 	methods
         function fill_trellis(obj, in)
-		   n_full_stages = obj.columns-2;
+		   n_full_stages = obj.columns-2; % # stages with 8 branches
            
            %First two stages only have meaningful path metric value for 1
            %and 2 bubbles
         
            %stage 1
-           obj.paths1(1) = obj.sq_euclidian_dist(obj.x(1:2,1),in(1:2,1));
+           obj.paths1(1) = obj.sq_euclidian_dist(obj.x(1:2,1),in(1:2,1)); %compare first input symbol to 00 and 11 for first 2 branches 
            obj.paths1(2) = obj.sq_euclidian_dist(obj.x(1:2,2),in(1:2,1));
            
-           obj.path_metrics(1,2) =  obj.paths1(1);
+           obj.path_metrics(1,2) =  obj.paths1(1);  % 0 + branch 
            obj.path_metrics(2,2) = obj.paths1(2);
            
            %stage 2
-           obj.paths2(1) = obj.sq_euclidian_dist(obj.x(1:2,1),in(1:2,2));
+           obj.paths2(1) = obj.sq_euclidian_dist(obj.x(1:2,1),in(1:2,2)); %4 branches in 2nd stage 
            obj.paths2(2) = obj.sq_euclidian_dist(obj.x(1:2,2),in(1:2,2));
            obj.paths2(3) = obj.sq_euclidian_dist(obj.x(1:2,3),in(1:2,2));
            obj.paths2(4) = obj.sq_euclidian_dist(obj.x(1:2,4),in(1:2,2));
@@ -36,7 +36,7 @@ classdef SoftVitDec < handle
            obj.path_metrics(3,3) = obj.paths2(3) + obj.path_metrics(2,2);
            obj.path_metrics(4,3) = obj.paths2(4) + obj.path_metrics(2,2);
            
-           %Stages 3- (columns+1)
+           %Stages 3- (columns+1) ... loop through 
            for i = 1:n_full_stages
                obj.paths_full(i,1) = obj.sq_euclidian_dist(obj.x(1:2,1),in(1:2,i+2));
                obj.paths_full(i,2) = obj.sq_euclidian_dist(obj.x(1:2,2),in(1:2,i+2));
@@ -59,10 +59,11 @@ classdef SoftVitDec < handle
         end        
    
         function output = traceback(obj)
-            n_full_stages = obj.columns-2;
-            output(1,1:obj.columns) =  99;  %Set to 99 for debugging purposes
-            currstate = [0,0];
+            n_full_stages = obj.columns-2; %all stages except first two have full branches 
+            output(1,1:obj.columns) =  99;  %Set to 99 for debugging purposes easy ID of bad result
+            currstate = [0,0]; %will be set below 
             
+            %pick lowest path metric of last column ... set as currstate
             if obj.path_metrics(1,obj.columns+1) == min(obj.path_metrics(1:4,obj.columns+1))
                 currstate = [1,obj.columns+1];
             elseif obj.path_metrics(2,obj.columns+1) == min(obj.path_metrics(1:4,obj.columns+1))
@@ -73,8 +74,8 @@ classdef SoftVitDec < handle
                 currstate = [4,obj.columns+1];
             end
             
-            %Stage 3 - columns-2
-            for i=-1:n_full_stages-2
+            %Last Stage - 3rd stage
+            for i=-1:n_full_stages-2 %#Shortcut to avoid change in implementation ... traces from last stage until 3rd
                 if currstate == [1,obj.columns-i]
                     if obj.path_metrics(1,obj.columns-i) == obj.path_metrics(1,obj.columns-1-i) + obj.paths_full(obj.columns-3-i,1)
                        currstate = [1,obj.columns-1-i];
@@ -92,7 +93,7 @@ classdef SoftVitDec < handle
                         output(obj.columns-1-i) = 1;
                     end
                  elseif currstate == [3,obj.columns-i]
-                    if obj.path_metrics(3,obj.columns-1) == obj.path_metrics(2,obj.columns-1-i) + obj.paths_full(obj.columns-3-i,3)
+                    if obj.path_metrics(3,obj.columns-i) == obj.path_metrics(2,obj.columns-1-i) + obj.paths_full(obj.columns-3-i,3)
                        currstate = [2,obj.columns-1-i];
                        output(obj.columns-1-i) = 0;
                     else
@@ -127,6 +128,7 @@ classdef SoftVitDec < handle
             
         end
         
+        %Main function 
         function output = decode_data(obj, in)
 		   [rows,columns]= size(in);
 		   obj.columns = columns;
