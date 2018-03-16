@@ -62,5 +62,13 @@ classdef Helper
                 end
             end
         end
+        function d_H = hamming_distance(x,y,len)
+            d_H = 0;
+            for i = 1:len
+                if x(1,i) ~= y(1,i)
+                    d_H = d_H + 1;
+                end
+            end
+        end
     end
 end
