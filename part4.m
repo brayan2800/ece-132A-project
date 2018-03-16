@@ -11,7 +11,7 @@ encoder = ConvEnc;
 decoder = VitDec;
 channel = Channel;
 
-
+correct = 0;
 encoded = zeros(8,10);
 decoded = zeros(8,5);
 for i = 1:8
@@ -21,12 +21,15 @@ for i = 1:8
     out = decoder.decode_data(encode);
     decoded(i,1:5) = out;
     if input == out
+        correct = correct + 1;
         fprintf("Decoded Correctly:\n")
         fprintf('\tInput  :  [%d, %d, %d, %d, %d]\n', input)
         fprintf('\tCodeword: |%d, %d, %d, %d, %d, %d, %d, %d, %d, %d|\n', encoded(i,1:10))
         fprintf('\tDecoded:  [%d, %d, %d, %d, %d]\n', out)
     end
 end
+
+fprintf("----(Summary) Decoded Correctly: %d----\n", correct);
 
 
 
